@@ -1,29 +1,23 @@
 import { drizzle } from 'drizzle-orm/singlestore'
-import { createPool, type Pool } from 'mysql2/promise'
+import mysql from 'mysql2/promise'
 
-import { env } from '~/env'
+import { env } from '../../env'
 import * as schema from './schema'
 
 const globalForDb = globalThis as unknown as { 
-  conn: Pool | undefined
+  client: mysql.Connection | undefined
 }
 
-const conn = 
-  globalForDb.conn ?? 
-  createPool({
+export const client = 
+  globalForDb.client ??
+  (await mysql.createConnection({
     host: env.SINGLESTORE_HOST,
     port: parseInt(env.SINGLESTORE_PORT),
     user: env.SINGLESTORE_USERNAME,
     password: env.SINGLESTORE_PASSWORD,
     database: env.SINGLESTORE_DB_NAME,
     ssl: {},
-    maxIdle: 0
-  })
+  }))
+if(env.NODE_ENV !== 'production') globalForDb.client = client
 
-if (env.NODE_ENV !== 'production') globalForDb.conn = conn
-
-conn.addListener('error', (err) => {
-  console.error('Database connection error', err)
-})
-
-export const db = drizzle(conn, { schema })
+export const db = drizzle(client,{schema})
