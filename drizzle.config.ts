@@ -3,10 +3,7 @@ import { type Config } from "drizzle-kit";
 import { env } from "~/env";
 
 export default {
-  schema: "./src/server/db/schema.ts",
-  dialect: "sqlite",
-  dbCredentials: {
-    url: env.DATABASE_URL,
-  },
-  tablesFilter: ["drive-tutorial_*"],
+  dialect: 'singlestore',
+  schema: './src/server/db/schema.ts',
+  tablesFilter: ["drive-clone_*"],
 } satisfies Config;
