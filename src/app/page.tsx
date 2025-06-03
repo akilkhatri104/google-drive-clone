@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { mockFiles,mockFolders } from "../lib/mock-data"
-import { Folder, FileIcon, Upload, ChevronRight } from "lucide-react"
-import Link from "next/link"
+import { Upload, ChevronRight } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { FileRow, FolderRow } from "./file-row"
 
@@ -26,8 +25,8 @@ export default function GoogleDriveClone() {
     const breadcrumbs = []
     let currentId = currentFolder
 
-    while (currentId !== null) {
-      const folder = mockFiles.find((file) => file.id === currentId)
+    while (currentId !== 'root') {
+      const folder = mockFolders.find((file) => file.id === currentId)
       if (folder) {
         breadcrumbs.unshift(folder)
         currentId = folder.parent
@@ -49,7 +48,7 @@ export default function GoogleDriveClone() {
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <Button
-              onClick={() => setCurrentFolder(null)}
+              onClick={() => setCurrentFolder('root')}
               variant="ghost"
               className="text-gray-300 hover:text-white mr-2"
             >
